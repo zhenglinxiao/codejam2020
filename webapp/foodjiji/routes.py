@@ -1,5 +1,5 @@
 from foodjiji import app, db
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
 
 posts = [
@@ -17,11 +17,23 @@ posts = [
          'price': 15,
                         }]
 
-@app.route("/login", methods=['POST'])
+isLoggedIn = False
+account = None
+
+@app.route("/login", methods=['GET'])
 def login():
     return render_template('login.html')
 
-@app.route("/create_account", methods=['POST'])
+@app.route("/logging", methods=['POST'])
+def logging():
+    # check if username is valid
+    global isLoggedIn
+    isLoggedIn = True
+    global account
+    account = request.form['username']
+    return redirect(f"/")
+
+@app.route("/create_account", methods=['GET'])
 def create_account():
     return render_template('create_account.html')
 
@@ -29,15 +41,14 @@ def create_account():
 def creating():
     new_account = Account(request.form['username'], int(request.form['account_type'])) # create object
     db.session.add(new_account)    # add object
-    db.session.commit()             # save
-    return redirect(f"/")
+    db.session.commit()            # save
+    return redirect(f"/login")
 
 @app.route("/", methods=['POST'])
 def webapp():
     prediction = 1
-    #return a html file
-    return render_template('home.html', prediction=prediction, posts=posts)
+    return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn)
 
 @app.route('/', methods=['GET'])
 def load():
-    return render_template('home.html', prediction=None)
+    return render_template('home.html', prediction=None, account=account, isLoggedIn=isLoggedIn)
