@@ -27,10 +27,13 @@ def login():
 @app.route("/logging", methods=['POST'])
 def logging():
     # check if username is valid
-    global isLoggedIn
-    isLoggedIn = True
-    global account
-    account = request.form['username']
+    user = Account.query.filter_by(username=request.form['username'], account_type=bool(int(request.form['account_type']))).first()
+
+    if user:
+        global isLoggedIn
+        global account
+        isLoggedIn = True
+        account = request.form['username']
     return redirect(f"/")
 
 @app.route("/create_account", methods=['GET'])
