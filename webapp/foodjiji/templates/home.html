@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="./static/main.css">
-  </head>
+    <link rel="stylesheet" type="text/css" href="./static/main.css">
+</head>
 
 <body>
 
-<div class="container"> <h1 style="font-size:300%;text-align:center;">FOODJIJI</h1></div>
+<div class="container"><h1 style="font-size:300%;text-align:center;">FOODJIJI</h1></div>
 
-<div class="button">
-      <form method="POST" enctype="multipart/form-data" action="/create_account">
-         <input type="submit" value="Create account" size = "100" style = "border-radius:20px; height:50px; font-size: 150%">
-      </form>
-</div>
+{% if isLoggedIn %}
+    <div class="account">
+        <h3> Logged in as {{ account }}</h3>
+    </div>
+{% else %}
+    <div class="button">
+        <form method="GET" enctype="multipart/form-data" action="/create_account">
+            <input type="submit" value="Create account" size="100"
+                   style="border-radius:20px; height:50px; font-size: 150%">
+        </form>
+    </div>
 
+    <div class="button">
+        <form method="GET" enctype="multipart/form-data" action="/login">
+            <input type="submit" value="Login" size="100" style="border-radius:20px; height:50px; font-size: 150%">
+        </form>
+    </div>
 
-<div class="button">
-      <form method="POST" enctype="multipart/form-data" action="/login">
-         <input type="submit" value="Login" size = "100" style = "border-radius:20px; height:50px; font-size: 150%">
-      </form>
-</div>
+{% endif %}
 
 <div class="content-section">
-      <form method="POST" enctype="multipart/form-data">
-         <h2 style="font-size:170%;">Search:</h2>
-         <input type="text" name="search_input" size = "100" style = "text-align:center; border-radius:20px; height:50px; font-size: 150%">
-         <input type="submit" value="Go" size = "100" style = "border-radius:20px; height:50px; font-size: 150%">
-      </form>
+    <form method="POST" enctype="multipart/form-data">
+        <h2 style="font-size:170%;">Search:</h2>
+        <input type="text" name="search_input" size="100"
+               style="text-align:center; border-radius:20px; height:50px; font-size: 150%">
+        <input type="submit" value="Go" size="100" style="border-radius:20px; height:50px; font-size: 150%">
+    </form>
 </div>
 
-      {% if prediction != None %}
-		{% for post in posts %}
-		<div class="content-section">
-		<h1> {{ post.item }} </h1>
-		<p> Offered by {{ post.account }} </p>
-		<p> {{ post.nationality }} Cuisine </p>
-		<p> Price: {{ post.price }} </p>
-		<img src={{ post.picture }}>
-		</div>
-		{% endfor %}
-      {% endif %}
+{% if prediction != None %}
+    {% for post in posts %}
+        <div class="content-section">
+            <h1> {{ post.item }} </h1>
+            <p> Offered by {{ post.account }} </p>
+            <p> {{ post.nationality }} Cuisine </p>
+            <p> Price: {{ post.price }} </p>
+            <img src={{ post.picture }}>
+        </div>
+    {% endfor %}
+{% endif %}
 
 </body>
 </html>
