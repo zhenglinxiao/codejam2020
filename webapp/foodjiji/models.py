@@ -11,9 +11,9 @@ class Account(db.Model):
         self.account_type = account_type
 
 class Post(db.Model):
-    id = db.Column(db.BIGINT, nullable=False, unique=True, primary_key=True)
+    id = db.Column(db.BIGSERIAL, nullable=False, unique=True, primary_key=True)
     item = db.Column(db.String(80), nullable=False)
-    user = db.Column(db.String(20), nullable=False) # should correspond to an user
+    user = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(140))
     price = db.Column(db.NUMERIC(10,2), nullable=False)
     start_date = db.Column(db.DATE)
@@ -21,7 +21,20 @@ class Post(db.Model):
     location = db.Column(db.ARRAY(db.String))
     delivery = db.Column(db.BOOLEAN, nullable=False)
     pickup = db.Column(db.BOOLEAN, nullable=False)
-    ingredients = db.Column(db.ARRAY(db.String))
+    ingredients = db.Column(db.String(120), nullable=False)
+    image = db.Column(db.String(120), nullable=False)
+    
+    def __init__(self, item, description, price, start_date, end_date, location, delivery, pickup, ingredients, image):
+        self.item = item
+        self.description = description
+        self.price = price
+        self.start_date = start_date
+        self.end_date = end_date
+        self.location = location
+        self.delivery = delivery
+        self.pickup = pickup
+        self.ingredients = ingredients
+        self.image = image
 
 class Review(db.Model):
     id = db.Column(db.BIGINT, nullable=False, unique=True, primary_key=True)

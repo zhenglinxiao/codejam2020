@@ -24,6 +24,26 @@ def login():
 @app.route("/create_account", methods=['POST'])
 def create_account():
     return render_template('create_account.html')
+	
+@app.route("/new_post", methods=['POST','GET'])
+def new_post():
+	return render_template('new_post.html')
+
+@app.route("/writing_post", methods=['POST','GET'])
+def creating_post():
+    new_post = Post(request.form['item_name'],
+                    request.form['description'],
+                    request.form['price'],
+                    request.form['start_date'],
+                    request.form['end_date'],
+                    request.form['location'],
+                    request.form['delivery'],
+                    request.form['pickup'],
+                    request.form['ingredients'], 
+                    request.form['img']) 
+    db.session.add(new_post)
+    db.session.commit()
+    return redirect(f"/")
 
 @app.route("/creating", methods=['POST'])
 def creating():
