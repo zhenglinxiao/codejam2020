@@ -6,6 +6,8 @@ Created on Thu Nov 14 15:29:55 2019
 """
 #IMPORT
 from flask import Flask, request, render_template
+from flask_sqlalchemy import SQLAlchemy
+from models import User, Post, Review
 
 #METHODS
 #Dummy data
@@ -26,6 +28,8 @@ posts = [
 
 #WEBAPP
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:onion@localhost/foodjiji'
+db = SQLAlchemy(app)
 
 @app.route("/", methods =['POST'])
 def webapp():
