@@ -1,4 +1,4 @@
-from app import db
+from foodjiji import db
 
 class User(db.Model):
     username = db.Column(db.String(20), nullable=False, unique=True, primary_key=True)

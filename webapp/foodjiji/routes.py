@@ -1,18 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Nov 14 15:29:55 2019
+from foodjiji import app
+from flask import render_template
+from foodjiji.models import User, Post, Review
 
-@author: liuyu
-"""
-#IMPORT
-from flask import Flask, request, render_template
-from flask_sqlalchemy import SQLAlchemy
-from models import User, Post, Review
-
-#METHODS
-#Dummy data
 posts = [
-    {   
+    {
          'account': 'Mario Pizza',
          'item': 'Pepperoni Pizza',
          'nationality': 'Italian',
@@ -26,11 +17,6 @@ posts = [
          'price': 15,
                         }]
 
-#WEBAPP
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:onion@localhost/foodjiji'
-db = SQLAlchemy(app)
-
 @app.route("/", methods =['POST'])
 def webapp():
     prediction = 1
@@ -40,6 +26,3 @@ def webapp():
 @app.route('/', methods=['GET'])
 def load():
     return render_template('templates.html', prediction=None)
-
-if __name__ == '__main__':
-    app.run(debug=True)
