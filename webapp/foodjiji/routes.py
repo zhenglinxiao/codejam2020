@@ -34,7 +34,12 @@ def logging():
         global account
         isLoggedIn = True
         account = request.form['username']
-    return redirect(f"/")
+        print('Successfully logged in.')
+        return redirect(f"/")
+    else:
+        print("Invalid account.")
+        return redirect(f"/create_account")
+
 
 @app.route("/create_account", methods=['GET'])
 def create_account():
@@ -42,9 +47,15 @@ def create_account():
 
 @app.route("/creating", methods=['POST'])
 def creating():
+    user = Account.query.filter_by(username=request.form['username'], account_type=bool(int(request.form['account_type']))).first()
+    if user:
+        print("Account already exists.")
+        redirect(f"/login")
+
     new_account = Account(request.form['username'], int(request.form['account_type'])) # create object
     db.session.add(new_account)    # add object
     db.session.commit()            # save
+    print("Successfully created account. You may now login.")
     return redirect(f"/login")
 
 @app.route("/", methods=['POST'])
