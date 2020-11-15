@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="./static/main.css">
+</head>
+
+<body>
+
+<div class="container"><h1 style="font-size:300%;text-align:center;">{{ account }}</h1></div>
+
+
+<div class="button">
+    <form method="GET" enctype="multipart/form-data" action="/">
+        <input type="submit" value="Home" size="100"
+               style="border-radius:20px; height:50px; font-size: 150%">
+    </form>
+</div>
+
+
+{% if isLoggedInAsBuyer %}
+    <!-- The query doesn't work in action for some reason
+    <div class="button">
+        <form method="GET" enctype="multipart/form-data" action="/new_review?user={{ account }}" >
+            <input type="submit" value="Write review" size="100"
+                   style="border-radius:20px; height:50px; font-size: 150%">
+        </form>
+    </div>
+    -->
+        <p><a href="/new_review?user={{ account }}">Write a review</a></p>
+{% endif %}
+
+{% for review in reviews %}
+    <div class="content-section">
+        <h1> {{ review.item }} </h1>
+        <p> Written by <a href="/account?user={{ review.by_user }}">{{ review.by_user }} </a></p>
+        <p> Rating: {{ review.rating }}/5 </p>
+        <p> {{ review.review }}/5 </p>
+    </div>
+{% endfor %}
+
+
+</body>
+</html>

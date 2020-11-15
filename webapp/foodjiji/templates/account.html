@@ -6,7 +6,7 @@
 
 <body>
 
-<div class="container"><h1 style="font-size:300%;text-align:center;">{{ account }}</h1></div>
+<div class="container"><h1 style="font-size:300%;text-align:center;">Reviews for {{ account }}</h1></div>
 
 
 <div class="button">
@@ -16,15 +16,28 @@
     </form>
 </div>
 
-{% if not buyer %}
+{% if not isAccountBuyer %}
     {% if isLoggedInAsBuyer %}
+    <!-- The query doesn't work in action for some reason
     <div class="button">
-        <form method="GET" enctype="multipart/form-data" action="/new_review?user={{ account }}">
-            <input type="submit" value="Review" size="100"
+        <form method="GET" enctype="multipart/form-data" action="/new_review?user={{ account }}" >
+            <input type="submit" value="Write review" size="100"
                    style="border-radius:20px; height:50px; font-size: 150%">
         </form>
     </div>
+    -->
+        <p><a href="/new_review?user={{ account }}">Write a review</a></p>
     {% endif %}
+
+    <!--
+    <div class="button">
+        <form method="GET" enctype="multipart/form-data" action="/reviews?user={{ account }}" >
+            <input type="submit" value="See reviews" size="100"
+                   style="border-radius:20px; height:50px; font-size: 150%">
+        </form>
+    </div>
+    -->
+    <p><a href="/reviews?user={{ account }}">See reviews</a></p>
 
     {% for post in posts %}
         <div class="content-section">
