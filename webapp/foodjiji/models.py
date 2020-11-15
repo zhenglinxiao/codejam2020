@@ -18,14 +18,15 @@ class Post(db.Model):
     price = db.Column(db.NUMERIC(10,2), nullable=False)
     start_date = db.Column(db.DATE)
     end_date = db.Column(db.DATE)
-    location = db.Column(db.ARRAY(db.String))
+    location = db.Column(db.String)
     delivery = db.Column(db.BOOLEAN, nullable=False)
     pickup = db.Column(db.BOOLEAN, nullable=False)
     ingredients = db.Column(db.String(120), nullable=False)
     image = db.Column(db.String(120), nullable=False)
     
-    def __init__(self, item, description, price, start_date, end_date, location, delivery, pickup, ingredients, image):
+    def __init__(self, item, user, description, price, start_date, end_date, location, delivery, pickup, ingredients, image):
         self.item = item
+        self.user = user
         self.description = description
         self.price = price
         self.start_date = start_date
