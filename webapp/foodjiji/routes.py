@@ -41,6 +41,15 @@ def logging():
         print("Invalid account.")
         return redirect(f"/create_account")
 
+@app.route("/logout", methods=['POST'])
+def logout():
+    global isLoggedIn
+    if isLoggedIn:
+        global account
+        isLoggedIn = False
+        account = None
+        print("Logged out")
+    return redirect(f"/")
 
 @app.route("/create_account", methods=['GET'])
 def create_account():
@@ -96,6 +105,7 @@ def account():
     user_obj = Account.query.filter_by(username=user).first()
     isAccountBuyer = user_obj.account_type
     posts = Post.query.filter_by(user=user)
+    reviews = Review.query.filter_by(by_user=user)
 
     isLoggedInAsBuyer = False
     if isLoggedIn:
@@ -103,7 +113,7 @@ def account():
         isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
 
     # add reviews
-    return render_template('account.html', account=user, isAccountBuyer=isAccountBuyer, posts=posts, isLoggedInAsBuyer=isLoggedInAsBuyer)
+    return render_template('account.html', account=user, isAccountBuyer=isAccountBuyer, posts=posts, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer)
 
 @app.route("/new_review", methods=['GET'])
 def new_review():
