@@ -155,4 +155,5 @@ def webapp():
 
 @app.route('/', methods=['GET'])
 def load():
+    posts = Post.query.all()
     return render_template('home.html', prediction=None, posts=posts, account=account, isLoggedIn=isLoggedIn)
