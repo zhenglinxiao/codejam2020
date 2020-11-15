@@ -11,7 +11,7 @@ class Account(db.Model):
         self.account_type = account_type
 
 class Post(db.Model):
-    id = db.Column(db.BIGSERIAL, nullable=False, unique=True, primary_key=True)
+    id = db.Column(db.BIGINT, nullable=False, unique=True, primary_key=True)
     item = db.Column(db.String(80), nullable=False)
     user = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(140))
