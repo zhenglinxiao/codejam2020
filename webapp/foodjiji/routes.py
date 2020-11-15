@@ -1,8 +1,9 @@
 from sqlalchemy import func
-
 from foodjiji import app, db
 from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
+import numpy
+from scoring_algorithm import scoring
 
 isLoggedIn = False
 account = None
@@ -106,21 +107,43 @@ def account():
 def new_review():
     if isLoggedIn:
         for_user = request.args.get('user')
-        return render_template('new_review.html', for_user=for_user)
+        posts = Post.query.filter_by(user=for_user)
+        return render_template('new_review.html', for_user=for_user, posts=posts)
     return redirect(f"/")
 
 @app.route("/writing_review", methods=['POST'])
 def writing_review():
-    if isLoggedIn:
+    if isLoggedInAsBuyer():
         for_user = request.args.get('user')
+        item = request.form['item']
+        rating = request.form['rating']
         new_review = Review(for_user,
                           account,
-                          request.form['item'],
-                          request.form['rating'],
+                          item,
+                          rating,
                           request.form['review'])
         db.session.add(new_review)
         db.session.commit()
         print("Successfully left review.")
+
+        item_post = Post.query.filter_by(user=for_user, item=item).first() # object
+        ingredients = item_post.ingredients  # string
+
+        list_ingredients = ingredients.split(',') # list of ingredients
+
+        # remove leading and trailing spaces
+        for i in range(len(list_ingredients)):
+            list_ingredients[i] = list_ingredients[i].strip()
+
+        user_obj = Account.query.filter_by(username=account).first()
+        ingredients_vector = scoring.encode(list_ingredients)
+
+        tmp = numpy.array(user_obj.preference)
+        tmp += int(rating) * ingredients_vector
+        user_obj.preference = tmp.tolist()
+        db.session.commit()
+
+        return redirect(f"/reviews?user={for_user}")
     return redirect(f"/")
 
 @app.route("/reviews", methods=['GET'])
@@ -136,9 +159,32 @@ def review():
     return redirect(f"/")
 
 
-@app.route("/", methods=['POST'])
+@app.route("/", methods=['GET'])
 def webapp():
-    return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
+    if isLoggedIn:
+        user_obj = Account.query.filter_by(username=account).first()
+        preference_vector = numpy.array(user_obj.preference)
+
+        posts = Post.query.all()
+        post_dict = dict()
+
+        for post in posts:
+            ingredients = post.ingredients
+            list_ingredients = ingredients.split(',')
+            for i in range(len(list_ingredients)):
+                list_ingredients[i] = list_ingredients[i].strip()
+            ingredients_vector = scoring.encode(list_ingredients)
+
+            post_dict[post] = scoring.score(ingredients_vector, preference_vector)
+
+        sorted_post = sorted(post_dict.items(), key=lambda x: x[1], reverse=True)
+        posts  = list()
+        for post in sorted_post:
+            posts.append(post[0])
+        print(posts)
+    else:
+        posts = Post.query.all()
+    return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
 
 @app.route("/search", methods=['POST'])
 def search():
@@ -146,25 +192,7 @@ def search():
     posts = Post.query.filter(func.lower(Post.item).like('%' + str.lower(search) + '%'),
                               func.lower(Post.description).like(('%' + str.lower(search) + '%')))
     return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=True, search=search)
-
-@app.route("/advanced_search", methods=['GET'])
-def advanced_search():
-    return render_template('advanced_search.html')
-
-@app.route("/search_results", methods=['POST'])
-def search_results():
-    criteria = request.form['criteria']
-
-    # terrible switch statement anti pattern
-    if criteria == 'ingredients':
-        ingredients = request.form['ingredients']
-    elif criteria == 'price':
-        min_price = request.form['min_price']
-        max_price = request.form['max_price']
-
-    posts=Post.query.all()
-    return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=True, search='advanced search')
-
-@app.route('/', methods=['GET'])
-def load():
-    return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
+#
+# @app.route('/', methods=['GET'])
+# def load():
+#     return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)

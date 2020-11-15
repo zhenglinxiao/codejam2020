@@ -1,4 +1,5 @@
 from foodjiji import db
+import numpy
 
 class Account(db.Model):
     username = db.Column(db.String(20), nullable=False, unique=True, primary_key=True)
@@ -10,6 +11,8 @@ class Account(db.Model):
         self.username = username
         self.email = email
         self.account_type = account_type
+        self.preference = numpy.zeros(1000)
+
 
 class Post(db.Model):
     id = db.Column(db.BIGINT, nullable=False, unique=True, primary_key=True)
