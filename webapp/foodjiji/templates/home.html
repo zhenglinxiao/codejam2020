@@ -2,6 +2,8 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="./static/main.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
@@ -44,7 +46,8 @@
 
 <div class="w3-panel w3-padding-large">
 {% for post in posts %}
-		<div class="w3-card-4" style="width:75%">
+	<div class="w3-panel w3-padding-medium">
+		<div class="w3-card-4" style="width:50%">
 		<img src="./static/img/{{ post.image }}" alt="photo" style="width:100%">
 		<div class="w3-container w3-center">
 				<h1> {{ post.item }} </h1>
@@ -52,8 +55,20 @@
 				<p> Price: {{ post.price }} </p>
 		</div>
 		</div>
-{% endfor %}
+	</div>
+	<div class="w3-panel w3-padding-medium">
+		<div class="w3-card-4" style="width:50%">
+		<img src="./static/img/{{ post.image }}" alt="photo" style="width:100%">
+		<div class="w3-container w3-center">
+				<h1> {{ post.item }} </h1>
+				<p> Offered by <a href="/account?user={{ post.user }}">{{ post.user }} </a></p>
+				<p> Price: {{ post.price }} </p>
+		</div>
+		</div>
+	</div>
 </div>
+{% endfor %}
+
 
 </body>
 </html>
