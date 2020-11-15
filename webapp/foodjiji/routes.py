@@ -30,7 +30,6 @@ def login():
 def logging():
     user = Account.query.filter_by(username=request.form['username'],
                                    account_type=bool(int(request.form['account_type']))).first()
-
     if user:
         global isLoggedIn
         global account
