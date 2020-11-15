@@ -2,21 +2,21 @@ from foodjiji import app, db
 from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
 
-posts = [
-    {
-        'account': 'Mario Pizza',
-        'item': 'Pepperoni Pizza',
-        'nationality': 'Italian',
-        'price': 15,
-        'picture': './static/img/pizza.jpg'
-    },
-    {
-        'account': 'LaoGanMa',
-        'item': 'Mapo Tofu',
-        'nationality': 'Chinese',
-        'price': 15,
-        'picture': './static/img/mapo_tofu.jpg'
-    }]
+# posts = [
+#     {
+#         'account': 'Mario Pizza',
+#         'item': 'Pepperoni Pizza',
+#         'nationality': 'Italian',
+#         'price': 15,
+#         'picture': './static/img/pizza.jpg'
+#     },
+#     {
+#         'account': 'LaoGanMa',
+#         'item': 'Mapo Tofu',
+#         'nationality': 'Chinese',
+#         'price': 15,
+#         'picture': './static/img/mapo_tofu.jpg'
+#     }]
 
 isLoggedIn = False
 account = None
@@ -93,15 +93,29 @@ def creating_post():
 
 @app.route("/account", methods=['GET'])
 def account():
-    if not isLoggedIn:
-        redirect(f"/login")
+    user = request.args.get('user')
+    user_obj = Account.query.filter_by(username=user).first()
+    buyer = user_obj.account_type
+    posts = Post.query.filter_by(user=user)
+
+    isLoggedInAsBuyer = False
+    if isLoggedIn:
+        account_obj = Account.query.filter_by(username=account).first()
+        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
+
     # add reviews
-    return render_template('account.html', account=account, posts=posts)
+    return render_template('account.html', account=user, buyer=buyer, posts=posts, isLoggedInAsBuyer=isLoggedInAsBuyer)
+
+@app.route("/new_review", methods=['GET'])
+def new_review():
+    user_for = request.args.get('user')
+    return render_template('new_review.html', user_for=user_for)
 
 @app.route("/", methods=['POST'])
 def webapp():
     search = request.form['search_input']
     prediction = 1
+    posts = Post.query.all()
     return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn)
 
 

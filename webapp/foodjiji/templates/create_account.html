@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Account</title>
+    <link rel="stylesheet" type="text/css" href="./static/main.css">
 </head>
 
 <body>
@@ -10,12 +9,13 @@
     <form method="POST" action="/creating">
         <label>Username:</label>
         <input id="username" name="username" type="text"/>
-
+        <br>
         <input id="seller" name="account_type" type="radio" value=0 checked=true />
-        <label>Seller</label>
+        <label for="seller">Seller</label>
         <input id="buyer" name="account_type" type="radio" value=1 />
-        <label>Buyer</label>
-        <input type="submit"/>
+        <label for="buyer">Buyer</label>
+        <br><br>
+        <div class="button"><input type="submit"/></div>
     </form>
 </body>
 </html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="./static/main.css">
+</head>
+<body>
+
+    <h1>Write a review for {{ for_user }}</h1>
+    <form method="POST" action="/writing_review">
+        <label>Item Name:</label>
+		<br>
+        <input id="item" name="item" type="text"/>
+		<br><br>
+
+		<label>Rating (/5) </label>
+		<input id="rating" name="rating" type=number min=0 max=5 step=1 />
+		<br><br>
+
+		<label>Review:</label>
+		<br>
+		<input id="review" name="review" type="text" size="140" />
+		<br><br>
+
+        <div class="button"><input type="submit"/></div>
+    </form>
+</body>
+</html>
