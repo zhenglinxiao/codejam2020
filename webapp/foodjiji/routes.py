@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from foodjiji import app, db
 from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
@@ -133,7 +133,7 @@ def writing_review():
 
         # remove leading and trailing spaces
         for i in range(len(list_ingredients)):
-            list_ingredients[i] = list_ingredients[i].strip()
+            list_ingredients[i] = str.lower(list_ingredients[i].strip())
 
         user_obj = Account.query.filter_by(username=account).first()
         ingredients_vector = scoring.encode(list_ingredients)
@@ -161,7 +161,7 @@ def review():
 
 @app.route("/", methods=['GET'])
 def webapp():
-    if isLoggedIn:
+    if isLoggedInAsBuyer():
         user_obj = Account.query.filter_by(username=account).first()
         preference_vector = numpy.array(user_obj.preference)
 
@@ -172,7 +172,7 @@ def webapp():
             ingredients = post.ingredients
             list_ingredients = ingredients.split(',')
             for i in range(len(list_ingredients)):
-                list_ingredients[i] = list_ingredients[i].strip()
+                list_ingredients[i] = str.lower(list_ingredients[i].strip())
             post_dict[post] = scoring.score(list_ingredients, preference_vector)
 
         sorted_post = sorted(post_dict.items(), key=lambda x: x[1], reverse=True)
@@ -186,10 +186,7 @@ def webapp():
 @app.route("/search", methods=['POST'])
 def search():
     search = request.form['search_input']
-    posts = Post.query.filter(func.lower(Post.item).like('%' + str.lower(search) + '%'),
-                              func.lower(Post.description).like(('%' + str.lower(search) + '%')))
+    posts = Post.query.filter(or_(func.lower(Post.item).like('%' + str.lower(search) + '%'),
+                              func.lower(Post.description).like(('%' + str.lower(search) + '%')),
+                              func.lower(Post.ingredients).like(('%' + str.lower(search) + '%'))))
     return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=True, search=search)
-#
-# @app.route('/', methods=['GET'])
-# def load():
-#     return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
