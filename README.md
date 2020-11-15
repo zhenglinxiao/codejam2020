@@ -1,2 +1,4 @@
-# Code.Jam Project 2020
-Foodjiji
+# Foodjiji
+A marketplace for local food lovers. 
+
+Code.Jam 2020
