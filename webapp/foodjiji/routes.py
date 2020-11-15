@@ -2,22 +2,6 @@ from foodjiji import app, db
 from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
 
-# posts = [
-#     {
-#         'account': 'Mario Pizza',
-#         'item': 'Pepperoni Pizza',
-#         'nationality': 'Italian',
-#         'price': 15,
-#         'picture': './static/img/pizza.jpg'
-#     },
-#     {
-#         'account': 'LaoGanMa',
-#         'item': 'Mapo Tofu',
-#         'nationality': 'Chinese',
-#         'price': 15,
-#         'picture': './static/img/mapo_tofu.jpg'
-#     }]
-
 isLoggedIn = False
 account = None
 
@@ -159,10 +143,18 @@ def webapp():
     search = request.form['search_input']
     prediction = 1
     posts = Post.query.all()
-    return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn)
+    isLoggedInAsBuyer = False
+    if isLoggedIn:
+        account_obj = Account.query.filter_by(username=account).first()
+        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
+    return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer)
 
 
 @app.route('/', methods=['GET'])
 def load():
     posts = Post.query.all()
-    return render_template('home.html', prediction=None, posts=posts, account=account, isLoggedIn=isLoggedIn)
+    isLoggedInAsBuyer = False
+    if isLoggedIn:
+        account_obj = Account.query.filter_by(username=account).first()
+        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
+    return render_template('home.html', prediction=None, posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer)

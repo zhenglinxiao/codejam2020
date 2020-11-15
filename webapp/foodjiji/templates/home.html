@@ -2,8 +2,8 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="./static/main.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
@@ -14,12 +14,14 @@
     <div class="account">
         <h3> Logged in as <a href="/account?user={{ account }}"> {{ account }} </a></h3>
     </div>
-    <div class="button">
-        <form method="GET" enctype="multipart/form-data" action="/new_post">
-            <input type="submit" value="New post" size="100"
-                   style="border-radius:20px; height:50px; font-size: 150%">
-        </form>
-    </div>
+    {% if not isLoggedInAsBuyer %}
+        <div class="button">
+            <form method="GET" enctype="multipart/form-data" action="/new_post">
+                <input type="submit" value="New post" size="100"
+                       style="border-radius:20px; height:50px; font-size: 150%">
+            </form>
+        </div>
+    {% endif %}
     <div class="button">
         <form method="POST" enctype="multipart/form-data" action="/logout">
             <input type="submit" value="Log Out" size="100"
@@ -51,19 +53,19 @@
 </div>
 
 <div class="w3-panel w3-padding-large">
-{% for post in posts %}
-	<div class="w3-panel w3-padding-medium">
-		<div class="w3-card-4" style="width:40%">
-		<img src="./static/img/{{ post.image }}" alt="photo" style="width:100%">
-		<div class="w3-container w3-center">
-				<h1> {{ post.item }} </h1>
-				<p> Offered by <a href="/account?user={{ post.user }}">{{ post.user }} </a></p>
-				<p> Price: {{ post.price }} </p>
-		</div>
-		</div>
-	</div>
-</div>
-{% endfor %}
+    {% for post in posts %}
+        <div class="w3-panel w3-padding-medium">
+            <div class="w3-card-4" style="width:40%">
+                <img src="./static/img/{{ post.image }}" alt="photo" style="width:100%">
+                <div class="w3-container w3-center">
+                    <h1> {{ post.item }} </h1>
+                    <p> Offered by <a href="/account?user={{ post.user }}">{{ post.user }} </a></p>
+                    <p> Price: {{ post.price }} </p>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
 
 
 </body>
