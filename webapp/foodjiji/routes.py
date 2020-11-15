@@ -91,6 +91,12 @@ def creating_post():
     print("Successfully created post.")
     return redirect(f"/")
 
+@app.route("/account", methods=['GET'])
+def account():
+    if not isLoggedIn:
+        redirect(f"/login")
+    # add reviews
+    return render_template('account.html', account=account, posts=posts)
 
 @app.route("/", methods=['POST'])
 def webapp():
