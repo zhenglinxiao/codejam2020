@@ -1,9 +1,19 @@
+from sqlalchemy import func
+
 from foodjiji import app, db
 from flask import render_template, request, redirect
 from foodjiji.models import Account, Post, Review
 
 isLoggedIn = False
 account = None
+
+def isLoggedInAsBuyer():
+    global isLoggedIn
+    global account
+    if isLoggedIn:
+        account_obj = Account.query.filter_by(username=account).first()
+        return isLoggedIn and account_obj.account_type
+    return False
 
 @app.route("/login", methods=['GET'])
 def login():
@@ -48,7 +58,7 @@ def creating():
         print("Account already exists.")
         redirect(f"/login")
 
-    new_account = Account(request.form['username'], int(request.form['account_type']))  # create object
+    new_account = Account(request.form['username'], request.form['email'], int(request.form['account_type']))  # create object
     db.session.add(new_account)  # add object
     db.session.commit()  # save
     print("Successfully created account. You may now login.")
@@ -90,14 +100,7 @@ def account():
     isAccountBuyer = user_obj.account_type
     posts = Post.query.filter_by(user=user)
     reviews = Review.query.filter_by(by_user=user)
-
-    isLoggedInAsBuyer = False
-    if isLoggedIn:
-        account_obj = Account.query.filter_by(username=account).first()
-        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
-
-    # add reviews
-    return render_template('account.html', account=user, isAccountBuyer=isAccountBuyer, posts=posts, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer)
+    return render_template('account.html', account=user, isAccountBuyer=isAccountBuyer, posts=posts, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer())
 
 @app.route("/new_review", methods=['GET'])
 def new_review():
@@ -127,34 +130,41 @@ def review():
     isAccountBuyer = user_obj.account_type
 
     if not isAccountBuyer:
-        isLoggedInAsBuyer = False
-        if isLoggedIn:
-            account_obj = Account.query.filter_by(username=account).first()
-            isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
-
         reviews = Review.query.filter_by(for_user=user)
-        return render_template('reviews.html', account=user, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer)
+        return render_template('reviews.html', account=user, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer())
 
     return redirect(f"/")
 
 
 @app.route("/", methods=['POST'])
 def webapp():
-    search = request.form['search_input']
-    prediction = 1
-    posts = Post.query.all()
-    isLoggedInAsBuyer = False
-    if isLoggedIn:
-        account_obj = Account.query.filter_by(username=account).first()
-        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
-    return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer)
+    return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
 
+@app.route("/search", methods=['POST'])
+def search():
+    search = request.form['search_input']
+    posts = Post.query.filter(func.lower(Post.item).like('%' + str.lower(search) + '%'),
+                              func.lower(Post.description).like(('%' + str.lower(search) + '%')))
+    return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=True, search=search)
+
+@app.route("/advanced_search", methods=['GET'])
+def advanced_search():
+    return render_template('advanced_search.html')
+
+@app.route("/search_results", methods=['POST'])
+def search_results():
+    criteria = request.form['criteria']
+
+    # terrible switch statement anti pattern
+    if criteria == 'ingredients':
+        ingredients = request.form['ingredients']
+    elif criteria == 'price':
+        min_price = request.form['min_price']
+        max_price = request.form['max_price']
+
+    posts=Post.query.all()
+    return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=True, search='advanced search')
 
 @app.route('/', methods=['GET'])
 def load():
-    posts = Post.query.all()
-    isLoggedInAsBuyer = False
-    if isLoggedIn:
-        account_obj = Account.query.filter_by(username=account).first()
-        isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
-    return render_template('home.html', prediction=None, posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer)
+    return render_template('home.html', posts=Post.query.all(), account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
