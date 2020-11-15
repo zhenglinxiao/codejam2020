@@ -49,20 +49,27 @@ def create_account():
 def new_post():
 	return render_template('new_post.html')
 
-@app.route("/writing_post", methods=['POST','GET'])
+@app.route("/writing_post", methods=['POST'])
 def creating_post():
+    delivery = False
+    pickup = False
+    if(request.form.get('delivery')):
+        delivery = True
+    if(request.form.get('pickup')):
+        pickup = True
     new_post = Post(request.form['item_name'],
+                    account,
                     request.form['description'],
                     request.form['price'],
                     request.form['start_date'],
                     request.form['end_date'],
                     request.form['location'],
-                    request.form['delivery'],
-                    request.form['pickup'],
-                    request.form['ingredients'], 
-                    request.form['img']) 
+                    delivery, pickup,
+                    request.form['ingredients'],
+                    request.form['img'])
     db.session.add(new_post)
     db.session.commit()
+    print("Successfully created post.")
     return redirect(f"/")
 
 @app.route("/creating", methods=['POST'])
