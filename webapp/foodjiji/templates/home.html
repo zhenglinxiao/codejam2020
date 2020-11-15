@@ -8,37 +8,39 @@
 
 <body>
 
-<div class="container"><h1 style="font-size:300%;text-align:center;">FOODJIJI</h1></div>
+<img src="./static/img/logo.jpg" style="width:100%">
 
+<div class="w3-panel w3-padding-large">
 {% if isLoggedIn %}
     <div class="account">
-        <h3> Logged in as <a href="/account?user={{ account }}"> {{ account }} </a></h3>
+         <div class="w3-container w3-teal"> <h3> Logged in as <a href="/account?user={{ account }}"> {{ account }} </a></h3></div>
     </div>
     {% if not isLoggedInAsBuyer %}
         <div class="button">
             <form method="GET" enctype="multipart/form-data" action="/new_post">
                 <input type="submit" value="New post" size="100"
-                       style="border-radius:20px; height:50px; font-size: 150%">
+                       style="border-radius:5px; height:25px;">
             </form>
         </div>
     {% endif %}
     <div class="button">
         <form method="POST" enctype="multipart/form-data" action="/logout">
             <input type="submit" value="Log Out" size="100"
-                   style="border-radius:20px; height:50px; font-size: 150%">
+                  style="border-radius:5px; height:25px;">
         </form>
     </div>
 {% else %}
     <div class="button">
         <form method="GET" enctype="multipart/form-data" action="/create_account">
             <input type="submit" value="Create account" size="100"
-                   style="border-radius:20px; height:50px; font-size: 150%">
+                   style="border-radius:5px; height:25px;">
         </form>
     </div>
 
     <div class="button">
         <form method="GET" enctype="multipart/form-data" action="/login">
-            <input type="submit" value="Login" size="100" style="border-radius:20px; height:50px; font-size: 150%">
+            <input type="submit" value="Login" size="100" 
+			style="border-radius:5px; height:25px;">
         </form>
     </div>
 {% endif %}
@@ -46,13 +48,13 @@
 <div class="content-section">
     <form method="POST" enctype="multipart/form-data">
         <h2 style="font-size:170%;">Search:</h2>
-        <input type="text" name="search_input" size="100"
-               style="text-align:center; border-radius:20px; height:50px; font-size: 150%">
-        <input type="submit" value="Go" size="100" style="border-radius:20px; height:50px; font-size: 150%">
+        <input class="w3-input w3-border" type="text" name="search_input" size="100"
+               style="border-radius:5px; height:25px;">
+        <input type="submit" value="Go" size="100" 
+		style="border-radius:5px; height:25px;">
     </form>
 </div>
 
-<div class="w3-panel w3-padding-large">
     {% for post in posts %}
         <div class="w3-panel w3-padding-medium">
             <div class="w3-card-4" style="width:40%">
