@@ -21,7 +21,6 @@ posts = [
 isLoggedIn = False
 account = None
 
-
 @app.route("/login", methods=['GET'])
 def login():
     return render_template('login.html')
@@ -95,6 +94,7 @@ def creating_post():
 
 @app.route("/", methods=['POST'])
 def webapp():
+    search = request.form['search_input']
     prediction = 1
     return render_template('home.html', prediction=prediction, posts=posts, account=account, isLoggedIn=isLoggedIn)
 
