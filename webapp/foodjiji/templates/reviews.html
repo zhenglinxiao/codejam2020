@@ -2,17 +2,17 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="./static/main.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
-
-<div class="container"><h1 style="font-size:300%;text-align:center;">Reviews for {{ account }}</h1></div>
-
-
+<div class="w3-container w3-teal"><h1>Reviews for {{ account }}</h1></div>
+<div class="w3-panel w3-padding-large">
 <div class="button">
     <form method="GET" enctype="multipart/form-data" action="/">
-        <input type="submit" value="Home" size="100"
-               style="border-radius:20px; height:50px; font-size: 150%">
+        <input type="submit" value="Home" align = "center"
+               style="border-radius:5px; height:25px;">
     </form>
 </div>
 
@@ -26,18 +26,19 @@
         </form>
     </div>
     -->
-        <p><a href="/new_review?user={{ account }}">Write a review</a></p>
+	
+    <div class="w3-panel w3-border"><h3 class="w3-text-teal"><a href="/new_review?user={{ account }}">Have feedback? Write a review</a></h3></div>
+	<br>
 {% endif %}
-
 {% for review in reviews %}
-    <div class="content-section">
-        <h1> {{ review.item }} </h1>
-        <p> Written by <a href="/account?user={{ review.by_user }}">{{ review.by_user }} </a></p>
-        <p> Rating: {{ review.rating }}/5 </p>
-        <p> {{ review.review }}/5 </p>
-    </div>
+	<div class="w3-panel w3-border">
+     <h3>{{ review.item }} : {{ review.rating }} / 5</h3>
+	 <p>Written by : Written by <a href="/account?user={{ review.by_user }}">{{ review.by_user }} </a></p>
+     <p>{{ review.review }}</p>
+	</div>
+	<br>
+	
 {% endfor %}
-
-
+</div>
 </body>
 </html>

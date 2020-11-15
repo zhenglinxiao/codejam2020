@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="./static/main.css">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-
-    <h1>Write a review for {{ for_user }}</h1>
+	<div class="w3-container w3-teal"><h1>Write a review for {{ for_user }}</h1></div>
+	
     <!-- This works for some reason -->
-    <form method="POST" action="/writing_review?user={{ for_user }}">
-        <label>Item Name:</label>
+    <form class="w3-container w3-card-4" method="POST" action="/writing_review?user={{ for_user }}">
+        <h2 class="w3-text-teal">Write your review below</h2>
+		<label class="w3-text-teal">Item Name:</label>
 		<br>
-        <input id="item" name="item" type="text"/>
-		<br><br>
-
-		<label>Rating</label>
-		<input id="rating" name="rating" type=number min=0 max=5 step=1 />
-		<br><br>
-
-		<label>Review:</label>
+        <input class="w3-input w3-border" id="item" name="item" type="text"/>
 		<br>
-		<input id="review" name="review" type="text" size="140" />
+
+		<label class="w3-text-teal">Rating</label>
+		<input class="w3-input w3-border" id="rating" name="rating" type=number min=0 max=5 step=1 />
+		<br>
+
+		<label class="w3-text-teal">Review:</label>
+		<br>
+		<input class="w3-input w3-border" id="review" name="review" type="text" size="140" />
 		<br><br>
 
         <div class="button"><input type="submit"/></div>
+		<br><br>
     </form>
 </body>
 </html>
