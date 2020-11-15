@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="./static/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
 
-    <h1>Login</h1>
-    <form method="POST" action="/logging">
-        <label>Username:</label>
-        <input id="username" name="username" type="text"/>
+    <div class="w3-container w3-teal"><h1>Login</h1></div>
+	
+    <form class="w3-container w3-card-4" action="/logging">
+		<h2 class="w3-text-teal">Enter Login Information</h2>
+        <label class="w3-text-teal">Username:</label>
+        <input class="w3-input w3-border" id="username" name="username" type="text"/>
         <br>
-        <input id="seller" name="account_type" type="radio" value=0 checked=true />
-        <label for="seller">Seller</label>
-        <input id="buyer" name="account_type" type="radio" value=1 />
-        <label for="buyer">Buyer</label>
+		
+        <input class="w3-radio" id="seller" name="account_type" type="radio" value=0 checked=true />
+        <label class="w3-text-teal" for="seller">Seller</label>
+		
+        <input class="w3-radio" id="buyer" name="account_type" type="radio" value=1 />
+        <label class="w3-text-teal" for="buyer">Buyer</label>
+		
         <br><br>
-        <div class="button"><input type="submit"/></div>
+        <input type="submit"/>
+		<br><br>
     </form>
 
 </body>
