@@ -173,15 +173,12 @@ def webapp():
             list_ingredients = ingredients.split(',')
             for i in range(len(list_ingredients)):
                 list_ingredients[i] = list_ingredients[i].strip()
-            ingredients_vector = scoring.encode(list_ingredients)
-
-            post_dict[post] = scoring.score(ingredients_vector, preference_vector)
+            post_dict[post] = scoring.score(list_ingredients, preference_vector)
 
         sorted_post = sorted(post_dict.items(), key=lambda x: x[1], reverse=True)
-        posts  = list()
+        posts = list()
         for post in sorted_post:
             posts.append(post[0])
-        print(posts)
     else:
         posts = Post.query.all()
     return render_template('home.html', posts=posts, account=account, isLoggedIn=isLoggedIn, isLoggedInAsBuyer=isLoggedInAsBuyer(), isSearchActive=False)
