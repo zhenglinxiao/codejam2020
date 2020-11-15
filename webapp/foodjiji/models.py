@@ -5,7 +5,7 @@ class Account(db.Model):
     username = db.Column(db.String(20), nullable=False, unique=True, primary_key=True)
     email = db.Column(db.String(30), nullable=False)
     account_type = db.Column(db.BOOLEAN, nullable=False)
-    preference = db.Column(db.ARRAY(db.Integer))
+    preference = db.Column(db.ARRAY(db.Float))
 
     def __init__(self, username, email, account_type):
         self.username = username

@@ -25,7 +25,7 @@ def encode (list_of_ingredients):
       encoding[features[x]] = 1
     else:
       encoding[999] = 1
-  return encoding.astype(int)
+  return encoding
 
 # #create sample user history
 # sample_user_history = {}

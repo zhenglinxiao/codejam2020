@@ -138,8 +138,12 @@ def writing_review():
         user_obj = Account.query.filter_by(username=account).first()
         ingredients_vector = scoring.encode(list_ingredients)
 
+        # normalize rating
+        norm_rating = int(rating)/5
+        norm_rating = 2 * norm_rating - 1
+
         tmp = numpy.array(user_obj.preference)
-        tmp += int(rating) * ingredients_vector
+        tmp += norm_rating * ingredients_vector
         user_obj.preference = tmp.tolist()
         db.session.commit()
 
