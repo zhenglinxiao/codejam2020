@@ -44,3 +44,10 @@ class Review(db.Model):
     item = db.Column(db.String(80))
     rating = db.Column(db.Integer, nullable=False) # 1-5 stars
     review = db.Column(db.String(140))
+
+    def __init__(self, for_user, by_user, item, rating, review):
+        self.for_user = for_user
+        self.by_user = by_user
+        self.item = item
+        self.rating = rating
+        self.review = review

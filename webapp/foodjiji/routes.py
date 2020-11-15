@@ -95,7 +95,7 @@ def creating_post():
 def account():
     user = request.args.get('user')
     user_obj = Account.query.filter_by(username=user).first()
-    buyer = user_obj.account_type
+    isAccountBuyer = user_obj.account_type
     posts = Post.query.filter_by(user=user)
 
     isLoggedInAsBuyer = False
@@ -104,12 +104,46 @@ def account():
         isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
 
     # add reviews
-    return render_template('account.html', account=user, buyer=buyer, posts=posts, isLoggedInAsBuyer=isLoggedInAsBuyer)
+    return render_template('account.html', account=user, isAccountBuyer=isAccountBuyer, posts=posts, isLoggedInAsBuyer=isLoggedInAsBuyer)
 
 @app.route("/new_review", methods=['GET'])
 def new_review():
-    user_for = request.args.get('user')
-    return render_template('new_review.html', user_for=user_for)
+    if isLoggedIn:
+        for_user = request.args.get('user')
+        return render_template('new_review.html', for_user=for_user)
+    return redirect(f"/")
+
+@app.route("/writing_review", methods=['POST'])
+def writing_review():
+    if isLoggedIn:
+        for_user = request.args.get('user')
+        new_review = Review(for_user,
+                          account,
+                          request.form['item'],
+                          request.form['rating'],
+                          request.form['review'])
+        db.session.add(new_review)
+        db.session.commit()
+        print("Successfully left review.")
+    return redirect(f"/")
+
+@app.route("/reviews", methods=['GET'])
+def review():
+    user = request.args.get('user')
+    user_obj = Account.query.filter_by(username=user).first()
+    isAccountBuyer = user_obj.account_type
+
+    if not isAccountBuyer:
+        isLoggedInAsBuyer = False
+        if isLoggedIn:
+            account_obj = Account.query.filter_by(username=account).first()
+            isLoggedInAsBuyer = isLoggedIn and account_obj.account_type
+
+        reviews = Review.query.filter_by(for_user=user)
+        return render_template('reviews.html', account=user, reviews=reviews, isLoggedInAsBuyer=isLoggedInAsBuyer)
+
+    return redirect(f"/")
+
 
 @app.route("/", methods=['POST'])
 def webapp():
@@ -121,4 +155,4 @@ def webapp():
 
 @app.route('/', methods=['GET'])
 def load():
-    return render_template('home.html', prediction=None, account=account, isLoggedIn=isLoggedIn)
+    return render_template('home.html', prediction=None, posts=posts, account=account, isLoggedIn=isLoggedIn)
